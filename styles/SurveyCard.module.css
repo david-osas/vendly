@@ -1,0 +1,102 @@
+.card {
+  background-color: #ffffff;
+  border: 1px solid #82ecd3;
+  box-sizing: border-box;
+  border-radius: 10px;
+  padding: 0 2%;
+  width: 50%;
+  margin: 0 auto;
+}
+
+.header {
+  font-weight: 800;
+  font-size: 22px;
+  line-height: 37px;
+  padding: 37px 0 25px;
+}
+
+.body {
+  text-align: center;
+}
+
+.bodyTitle {
+  margin: 37px 0 3px;
+  font-weight: 800;
+  font-size: 18.5px;
+  line-height: 31px;
+  color: #003333;
+}
+
+.bodyText {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 22px;
+  color: #006e72;
+}
+
+.textInput {
+  width: 90%;
+  margin: 38px 5% 0;
+  border: 0;
+  border-bottom: 2.5px solid #007575;
+  outline: 0;
+}
+
+.textInput::placeholder {
+  font-weight: bold;
+  font-size: 14.8px;
+  line-height: 24px;
+  text-align: center;
+  color: #00d0be;
+}
+
+.footer {
+  text-align: center;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 19px;
+  padding: 42px 0 19px;
+}
+
+.footerTextDark {
+  color: #006e72;
+}
+
+.footerTextLight {
+  color: #82ecd3;
+}
+
+.button {
+  background: #c6f6f2;
+  border: 1px solid #82ecd3;
+  box-sizing: border-box;
+  border-radius: 5px;
+  width: 100%;
+  display: flex;
+  padding: 11px 5% 9px;
+  margin-bottom: 25px;
+}
+
+.buttonText {
+  width: 100%;
+  text-align: center;
+  text-transform: capitalize;
+  color: #00d0be;
+  font-weight: 800;
+  font-size: 15px;
+  line-height: 25px;
+}
+
+.buttonIcon {
+  margin: auto 0;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+@media screen and (max-width: 800px) {
+  .card {
+    width: 95%;
+    padding: 0 5%;
+  }
+}
