@@ -14,6 +14,7 @@ interface SurveyCardProps {
 export const SurveyCard = (props: SurveyCardProps) => {
   const { title, setPopUp, selectedHandle, handleUser } = props;
   const [textInput, setTextInput] = useState("");
+  const [validate, setValidate] = useState(false);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const value = e.target.value;
@@ -33,6 +34,32 @@ export const SurveyCard = (props: SurveyCardProps) => {
     setTextInput("");
   }
 
+  function handleButtonClass() {
+    if (validate) {
+      return styles.buttonValidate;
+    } else if (selectedHandle.length > 0) {
+      return styles.buttonDark;
+    }
+
+    return "";
+  }
+
+  function handleButtonClick() {
+    let isValid = false;
+
+    for (let item of users) {
+      if (item.handle === textInput) {
+        isValid = true;
+        break;
+      }
+    }
+
+    if (isValid) {
+      setValidate(true);
+      setPopUp(PopUpType.EMPTY);
+    }
+  }
+
   useEffect(() => {
     if (selectedHandle.length > 0) {
       setTextInput(selectedHandle);
@@ -49,75 +76,112 @@ export const SurveyCard = (props: SurveyCardProps) => {
 
   return (
     <div className={styles.card}>
-      <div className={styles.header}>
-        <p>{title}</p>
-      </div>
+      {!validate && (
+        <div className={styles.header}>
+          <p>{title}</p>
+        </div>
+      )}
 
       <div className={styles.body}>
-        <Image
-          src="/assets/icons/Flag.svg"
-          alt="green flag"
-          width={289}
-          height={161}
-        />
-        <p className={styles.bodyTitle}>Pass it on?</p>
-        <p className={styles.bodyText}>
-          Nominate someone else to take this incentivized survey.
-        </p>
-        <input
-          placeholder="Search/ Insert their Twitter handle"
-          type={"text"}
-          className={styles.textInput}
-          value={textInput}
-          onChange={handleChange}
-        />
+        {validate ? (
+          <>
+            <div className={styles.validateNumberBox}>
+              <Image
+                src="/assets/icons/Naira.svg"
+                alt="naira"
+                width={13.82}
+                height={14.51}
+              />
+              <p className={styles.validateNumber}>2,000.00</p>
+            </div>
+            <p className={styles.validateTitle}>Please wait.</p>
+            <p className={styles.validateText}>
+              Validating user credentials....
+            </p>
+          </>
+        ) : (
+          <>
+            <Image
+              src="/assets/icons/Flag.svg"
+              alt="green flag"
+              width={289}
+              height={161}
+            />
+            <p className={styles.bodyTitle}>Pass it on?</p>
+            <p className={styles.bodyText}>
+              Nominate someone else to take this incentivized survey.
+            </p>
+            <input
+              placeholder="Search/ Insert their Twitter handle"
+              type={"text"}
+              className={styles.textInput}
+              value={textInput}
+              onChange={handleChange}
+            />
+          </>
+        )}
       </div>
 
       <div className={styles.footer}>
         <button
-          className={`${styles.button} ${
-            selectedHandle.length > 0 && styles.buttonDark
-          }`}
-          disabled={textInput.length > 0 && selectedHandle.length === 0}
+          className={`${styles.button} ${handleButtonClass()}`}
+          disabled={
+            (textInput.length > 0 && selectedHandle.length === 0) || validate
+          }
+          onClick={handleButtonClick}
         >
-          <p
-            className={`${styles.buttonText} ${
-              textInput.length > 0 && styles.buttonTextLight
-            }`}
-          >
-            {selectedHandle.length > 0 ? "Continue" : "Skip"}
-          </p>
-          <div className={styles.buttonIcon}>
+          {validate ? (
             <Image
-              src={`/assets/icons/${
-                textInput.length > 0
-                  ? "ContinueArrowLight"
-                  : "ContinueArrowDark"
-              }.svg`}
-              alt="continue"
-              width={6.96}
-              height={11.81}
+              src="/assets/icons/Validate.svg"
+              alt="validating"
+              width={47}
+              height={8}
+              className={styles.buttonValidateImg}
             />
-          </div>
+          ) : (
+            <>
+              {" "}
+              <p
+                className={`${styles.buttonText} ${
+                  textInput.length > 0 && styles.buttonTextLight
+                }`}
+              >
+                {selectedHandle.length > 0 ? "Continue" : "Skip"}
+              </p>
+              <div className={styles.buttonIcon}>
+                <Image
+                  src={`/assets/icons/${
+                    textInput.length > 0
+                      ? "ContinueArrowLight"
+                      : "ContinueArrowDark"
+                  }.svg`}
+                  alt="continue"
+                  width={6.96}
+                  height={11.81}
+                />
+              </div>
+            </>
+          )}
         </button>
-        {textInput.length == 0 ? (
-          <p>
-            <span className={styles.footerTextDark}>Read </span>
-            <span className={styles.footerTextLight}>Instructions</span>
-          </p>
-        ) : (
-          <div className={styles.goBackBox}>
-            <Image
-              src="/assets/icons/ArrowLeft.svg"
-              alt="left"
-              width={16}
-              height={11}
-            />
-            <span className={styles.goBackText} onClick={handleGoBack}>
-              Go Back
-            </span>
-          </div>
-        )}
+        {!validate &&
+          (textInput.length == 0 ? (
+            <p>
+              <span className={styles.footerTextDark}>Read </span>
+              <span className={styles.footerTextLight}>Instructions</span>
+            </p>
+          ) : (
+            <div className={styles.goBackBox}>
+              <Image
+                src="/assets/icons/ArrowLeft.svg"
+                alt="left"
+                width={16}
+                height={11}
+              />
+              <span className={styles.goBackText} onClick={handleGoBack}>
+                Go Back
+              </span>
+            </div>
+          ))}
       </div>
     </div>
   );

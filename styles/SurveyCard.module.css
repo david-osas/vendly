@@ -82,6 +82,35 @@
   margin-left: 9px;
 }
 
+.validateNumberBox {
+  margin: 20.64px 0 31px;
+  display: flex;
+  justify-content: center;
+}
+
+.validateNumber {
+  font-weight: 900;
+  font-size: 24.5px;
+  line-height: 41px;
+  color: #000000;
+  margin-left: 3px;
+}
+
+.validateTitle {
+  font-weight: 600;
+  font-size: 17px;
+  line-height: 28px;
+  color: #003333;
+}
+
+.validateText {
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 21px;
+  color: #006e72;
+  margin: 14px 0 54px;
+}
+
 .button {
   background: #c6f6f2;
   border: 1px solid #82ecd3;
@@ -96,6 +125,17 @@
 .buttonDark {
   background: #006e72;
   border-color: #006e72;
+}
+
+.buttonValidate {
+  background: #82ecd3;
+  border-color: #82ecd3;
+  padding: 18px 5% 19px;
+}
+
+.buttonValidate span {
+  display: block;
+  margin: 0 auto !important;
 }
 
 .buttonText {
