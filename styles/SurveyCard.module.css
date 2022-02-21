@@ -82,6 +82,16 @@
   margin-left: 9px;
 }
 
+.continueAnimation {
+  margin: 0 auto;
+}
+
+.validateAnimation {
+  width: 55%;
+  height: 127.36px;
+  margin: 52px auto 0;
+}
+
 .validateNumberBox {
   margin: 20.64px 0 31px;
   display: flex;

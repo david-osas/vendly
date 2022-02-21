@@ -29,7 +29,12 @@ const Home: NextPage = () => {
 
       <main className={styles.main}>
         {popup !== PopUpType.EMPTY ? (
-          <PopUp users={users} type={popup} setHandle={handleUser} />
+          <PopUp
+            users={users}
+            type={popup}
+            setHandle={handleUser}
+            setPopUp={handlePopUp}
+          />
         ) : null}
         <SurveyCard
           title="Survey complete!"

@@ -1,20 +1,60 @@
 import Image from "next/image";
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "../styles/PopUp.module.css";
 import { PopUpType, User } from "../types";
+import { AnimationItem } from "lottie-web";
+import { generateAnimation } from "../utils/animation";
 
 interface PopUpProps {
   users: User[];
   type: PopUpType;
   setHandle: (val: string) => void;
+  setPopUp: (val: PopUpType) => void;
 }
 
 export const PopUp = (props: PopUpProps) => {
-  const { users, type, setHandle } = props;
+  const { users, type, setHandle, setPopUp } = props;
+  const animationRef = useRef(null);
 
   function handleUser(handle: string) {
     setHandle(handle);
+    setPopUp(PopUpType.EMPTY);
   }
+
+  function getAnimationDetails(): { path: string; text: string } {
+    if (type === PopUpType.LOADING) {
+      return {
+        path: "/assets/animations/loading.json",
+        text: "Fetching Search Results",
+      };
+    } else if (type === PopUpType.ERROR) {
+      return {
+        path: "/assets/animations/error.json",
+        text: "No results found",
+      };
+    } else {
+      return { path: "", text: "" };
+    }
+  }
+
+  useEffect(() => {
+    let animation: AnimationItem | null = null;
+
+    if (type === PopUpType.LOADING || type === PopUpType.ERROR) {
+      animation = generateAnimation(
+        animationRef,
+        getAnimationDetails().path,
+        1.8
+      );
+      if (animation) {
+        animation.play();
+      }
+    }
+
+    return () => {
+      animation?.destroy();
+    };
+  }, [type]);
 
   return (
     <div className={styles.body}>
@@ -56,10 +96,12 @@ export const PopUp = (props: PopUpProps) => {
             />
           </div>
         </div>
-      ) : null}
-      {/* <div className={styles.loading}>
-        <p className={styles.loadingText}>Fetching Search Results</p>
-      </div> */}
+      ) : (
+        <div className={styles.loading}>
+          <div ref={animationRef} className={styles.loadingAnimation}></div>
+          <p className={styles.loadingText}>{getAnimationDetails().text}</p>
+        </div>
+      )}
     </div>
   );
 };

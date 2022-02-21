@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import styles from "../styles/SurveyCard.module.css";
 import { users } from "../data";
 import { PopUpType } from "../types";
+import { generateAnimation } from "../utils/animation";
+import { AnimationItem } from "lottie-web";
 
 interface SurveyCardProps {
   title: string;
@@ -13,18 +15,46 @@ interface SurveyCardProps {
 
 export const SurveyCard = (props: SurveyCardProps) => {
   const { title, setPopUp, selectedHandle, handleUser } = props;
+  const [timeout, updateTimeout] = useState<NodeJS.Timeout | null>(null);
   const [textInput, setTextInput] = useState("");
-  const [validate, setValidate] = useState(false);
+  const [complete, setComplete] = useState({
+    continue: false,
+    validate: false,
+    validText: false,
+  });
+  const continueRef = useRef(null);
+  const validateRef = useRef(null);
+
+  const continuePath = "/assets/animations/continue.json";
+  const validatePath = "/assets/animations/validate.json";
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const value = e.target.value;
+    if (timeout) {
+      clearTimeout(timeout);
+    }
+
+    setPopUp(PopUpType.LOADING);
 
     if (value.length > 0) {
+      let isValid = false;
+
       for (let item of users) {
         if (item.handle.startsWith(value)) {
           setPopUp(PopUpType.USERS);
+          isValid = true;
         }
       }
+
+      if (!isValid) {
+        const value = setTimeout(() => {
+          setPopUp(PopUpType.ERROR);
+        }, 2000);
+        updateTimeout(value);
+      }
+    } else {
+      setPopUp(PopUpType.EMPTY);
+      handleUser("");
     }
 
     setTextInput(value);
@@ -32,12 +62,13 @@ export const SurveyCard = (props: SurveyCardProps) => {
 
   function handleGoBack() {
     setTextInput("");
+    setPopUp(PopUpType.EMPTY);
   }
 
   function handleButtonClass() {
-    if (validate) {
+    if (complete.validate) {
       return styles.buttonValidate;
-    } else if (selectedHandle.length > 0) {
+    } else if (complete.validText) {
       return styles.buttonDark;
     }
 
@@ -55,36 +86,69 @@ export const SurveyCard = (props: SurveyCardProps) => {
     }
 
     if (isValid) {
-      setValidate(true);
-      setPopUp(PopUpType.EMPTY);
+      setComplete({ ...complete, continue: true });
+
+      setTimeout(() => {
+        setComplete({ ...complete, continue: false, validate: true });
+        setPopUp(PopUpType.EMPTY);
+      }, 2000);
     }
   }
 
   useEffect(() => {
+    let isValid = false;
+
+    for (let item of users) {
+      if (item.handle === textInput) {
+        isValid = true;
+        break;
+      }
+    }
+
+    setComplete({ ...complete, validText: isValid });
+  }, [textInput]);
+
+  useEffect(() => {
     if (selectedHandle.length > 0) {
       setTextInput(selectedHandle);
-      setPopUp(PopUpType.EMPTY);
+      handleUser("");
     }
   }, [selectedHandle]);
 
   useEffect(() => {
-    if (textInput === "") {
-      setPopUp(PopUpType.EMPTY);
-      handleUser("");
+    let animation: AnimationItem | null = null;
+    if (complete.continue) {
+      animation = generateAnimation(continueRef, continuePath, 1.8);
     }
-  }, [textInput]);
+
+    return () => {
+      animation?.destroy();
+    };
+  }, [complete.continue]);
+
+  useEffect(() => {
+    let animation: AnimationItem | null = null;
+    if (complete.validate) {
+      animation = generateAnimation(validateRef, validatePath, 1.8);
+    }
+
+    return () => {
+      animation?.destroy();
+    };
+  }, [complete.validate]);
 
   return (
     <div className={styles.card}>
-      {!validate && (
-        <div className={styles.header}>
+      {!complete.validate && (
+        <header className={styles.header}>
           <p>{title}</p>
-        </div>
+        </header>
       )}
 
       <div className={styles.body}>
-        {validate ? (
+        {complete.validate ? (
           <>
+            <div ref={validateRef} className={styles.validateAnimation}></div>
             <div className={styles.validateNumberBox}>
               <Image
                 src="/assets/icons/Naira.svg"
@@ -122,15 +186,13 @@ export const SurveyCard = (props: SurveyCardProps) => {
         )}
       </div>
 
-      <div className={styles.footer}>
+      <footer className={styles.footer}>
         <button
           className={`${styles.button} ${handleButtonClass()}`}
-          disabled={
-            (textInput.length > 0 && selectedHandle.length === 0) || validate
-          }
+          disabled={!complete.validText || complete.validate}
           onClick={handleButtonClick}
         >
-          {validate ? (
+          {complete.validate ? (
             <Image
               src="/assets/icons/Validate.svg"
               alt="validating"
@@ -138,16 +200,18 @@ export const SurveyCard = (props: SurveyCardProps) => {
               height={8}
               className={styles.buttonValidateImg}
             />
+          ) : complete.continue ? (
+            <div ref={continueRef} className={styles.continueAnimation}></div>
           ) : (
             <>
-              {" "}
               <p
                 className={`${styles.buttonText} ${
                   textInput.length > 0 && styles.buttonTextLight
                 }`}
               >
-                {selectedHandle.length > 0 ? "Continue" : "Skip"}
+                {complete.validText ? "Continue" : "Skip"}
               </p>
+
               <div className={styles.buttonIcon}>
                 <Image
                   src={`/assets/icons/${
@@ -163,7 +227,7 @@ export const SurveyCard = (props: SurveyCardProps) => {
             </>
           )}
         </button>
-        {!validate &&
+        {!complete.validate &&
           (textInput.length == 0 ? (
             <p>
               <span className={styles.footerTextDark}>Read </span>
@@ -182,7 +246,7 @@ export const SurveyCard = (props: SurveyCardProps) => {
               </span>
             </div>
           ))}
-      </div>
+      </footer>
     </div>
   );
 };

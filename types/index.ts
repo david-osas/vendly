@@ -8,4 +8,5 @@ export enum PopUpType {
   EMPTY = "",
   LOADING = "loading",
   USERS = "users",
+  ERROR = "error",
 }
