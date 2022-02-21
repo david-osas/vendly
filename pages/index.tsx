@@ -1,7 +1,9 @@
 import type { NextPage } from "next";
 import Head from "next/head";
+import { PopUp } from "../components/PopUp";
 import { SurveyCard } from "../components/SurveyCard";
 import styles from "../styles/Home.module.css";
+import { users } from "../data";
 
 const Home: NextPage = () => {
   return (
@@ -13,6 +15,7 @@ const Home: NextPage = () => {
       </Head>
 
       <main className={styles.main}>
+        <PopUp users={users} />
         <SurveyCard title="Survey complete!" />
       </main>
     </div>

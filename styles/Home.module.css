@@ -4,5 +4,11 @@
 }
 
 .main {
-  padding: 4rem 0;
+  padding: 9% 5%;
+}
+
+@media screen and (max-width: 800px) {
+  .main {
+    padding: 25% 1%;
+  }
 }
