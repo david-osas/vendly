@@ -41,6 +41,10 @@
   border: 0;
   border-bottom: 2.5px solid #007575;
   outline: 0;
+  font-weight: 800;
+  font-size: 16px;
+  line-height: 27px;
+  color: #000000;
 }
 
 .textInput::placeholder {
@@ -59,12 +63,23 @@
   padding: 42px 0 19px;
 }
 
-.footerTextDark {
+.footerTextDark,
+.goBackText {
   color: #006e72;
 }
 
 .footerTextLight {
   color: #82ecd3;
+}
+
+.goBackBox {
+  cursor: pointer;
+}
+
+.goBackText {
+  font-weight: 600;
+  line-height: 20px;
+  margin-left: 9px;
 }
 
 .button {
@@ -78,6 +93,11 @@
   margin-bottom: 25px;
 }
 
+.buttonDark {
+  background: #006e72;
+  border-color: #006e72;
+}
+
 .buttonText {
   width: 100%;
   text-align: center;
@@ -86,6 +106,10 @@
   font-weight: 800;
   font-size: 15px;
   line-height: 25px;
+}
+
+.buttonTextLight {
+  color: #ffffff;
 }
 
 .buttonIcon {
